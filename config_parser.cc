@@ -152,6 +152,7 @@ bool NginxConfigParser::Parse(std::istream* config_file, NginxConfig* config) {
   config_stack.push(config);
   TokenType last_token_type = TOKEN_TYPE_START;
   TokenType token_type;
+  int counter = 0;
   while (true) {
     std::string token;
     token_type = ParseToken(config_file, &token);
@@ -194,6 +195,7 @@ bool NginxConfigParser::Parse(std::istream* config_file, NginxConfig* config) {
         // Error.
         break;
       }
+      counter++;
       NginxConfig* const new_config = new NginxConfig;
       config_stack.top()->statements_.back().get()->child_block_.reset(
           new_config);
@@ -203,6 +205,7 @@ bool NginxConfigParser::Parse(std::istream* config_file, NginxConfig* config) {
         // Error.
         break;
       }
+      counter--;
       config_stack.pop();
     } else if (token_type == TOKEN_TYPE_EOF) {
       if (last_token_type != TOKEN_TYPE_STATEMENT_END &&
@@ -210,8 +213,13 @@ bool NginxConfigParser::Parse(std::istream* config_file, NginxConfig* config) {
         // Error.
         break;
       }
+      else if (counter != 0) {
+        printf("There are unmatched braces in the config\n");
+        return false;
+      }
       return true;
-    } else {
+    }
+    else {
       // Error. Unknown token.
       break;
     }

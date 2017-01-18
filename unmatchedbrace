@@ -1,0 +1,6 @@
+this should fail
+{
+	int two
+	{
+	int five;
+	}
