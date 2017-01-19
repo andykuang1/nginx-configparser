@@ -19,12 +19,9 @@ TEST_F(NginxConfigParserTest, SimpleConfig) {
 }
 
 TEST_F(NginxConfigParserTest, TestInput){
-	bool success = parser.Parse("invalideof", &out_config);
-
-	EXPECT_FALSE(success);
+	EXPECT_FALSE(parser.Parse("invalideof", &out_config));
 }
 
 TEST_F(NginxConfigParserTest, TestInput2){
-	bool success = parser.Parse("unmatchedbrace", &out_config);
-	EXPECT_FALSE(success);
+	EXPECT_FALSE(parser.Parse("unmatchedbrace", &out_config));
 }
